@@ -15,13 +15,15 @@ public class FinanceManagerApp {
             System.out.print("Введите команду: ");
 
             String command = scanner.nextLine();
+            String username;
+            String password;
 
             switch (command) {
                 case "register":
                     System.out.print("Логин: ");
-                    String username = scanner.nextLine();
+                    username = scanner.nextLine();
                     System.out.print("Пароль: ");
-                    String password = scanner.nextLine();
+                    password = scanner.nextLine();
                     authService.registerUser(username, password);
                     break;
                 case "login":

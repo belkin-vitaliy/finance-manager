@@ -13,14 +13,18 @@ import java.nio.file.Paths;
 
 public class FileStorageServiceImpl implements FileStorageService {
     private static final Gson gson = new Gson();
+    public static final String SAVE_SUCCESS_NOTIFICATION = "Данные сохранены.";
+    public static final String ERROR_SAVING_DATA_MESSAGE = "Ошибка сохранения данных: ";
+    public static final String SUCCESSFUL_DATA_LOAD = "Данные загружены.";
+    public static final String ERROR_LOADING_DATA_MESSAGE = "Ошибка загрузки данных: ";
 
     @Override
     public void saveWallet(Wallet wallet, String filename) {
         try (Writer writer = new FileWriter(filename)) {
             gson.toJson(wallet, writer);
-            System.out.println("Данные сохранены.");
+            System.out.println(SAVE_SUCCESS_NOTIFICATION);
         } catch (IOException e) {
-            System.err.println("Ошибка сохранения данных: " + e.getMessage());
+            System.err.println(ERROR_SAVING_DATA_MESSAGE + e.getMessage());
         }
     }
 
@@ -30,10 +34,10 @@ public class FileStorageServiceImpl implements FileStorageService {
             Type type = new TypeToken<Wallet>() {
             }.getType();
             Wallet wallet = gson.fromJson(reader, type);
-            System.out.println("Данные загружены.");
+            System.out.println(SUCCESSFUL_DATA_LOAD);
             return wallet;
         } catch (IOException e) {
-            System.err.println("Ошибка загрузки данных: " + e.getMessage());
+            System.err.println(ERROR_LOADING_DATA_MESSAGE + e.getMessage());
             return null;
         }
     }

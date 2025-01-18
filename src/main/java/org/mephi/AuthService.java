@@ -32,4 +32,14 @@ public interface AuthService {
      * @return мапа, где ключом является имя пользователя, а значением — соответствующий объект User
      */
     Map<String, User> getUsers();
+
+    /**
+     * Checks whether the provided password matches the stored password for authentication.
+     *
+     * @param user             the user to authenticate
+     * @param providedPassword the password provided during authentication
+     * @return true if the provided password is correct, false otherwise
+     */
+    boolean checkPassword(User user, String providedPassword);
+
 }

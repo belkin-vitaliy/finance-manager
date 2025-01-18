@@ -17,9 +17,9 @@ public interface TransferService {
      * Метод гарантирует, что у отправителя достаточно средств на кошельке,
      * и проверяет наличие получателя.
      *
-     * @param sender пользователь, инициирующий денежный перевод
+     * @param sender            пользователь, инициирующий денежный перевод
      * @param recipientUsername имя пользователя-получателя
-     * @param amount денежная сумма, подлежащая переводу
+     * @param amount            денежная сумма, подлежащая переводу
      */
     void transferMoney(User sender, String recipientUsername, double amount);
 }

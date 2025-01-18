@@ -5,13 +5,39 @@ import java.util.Scanner;
 public class FinanceManagerApp {
 
     private static final AuthService authService = new AuthServiceImpl();
+    private static final TransactionService transactionService = new TransactionServiceImpl();
     private static final FileStorageService fileStorageService = new FileStorageServiceImpl();
-    private static final TransferService transferService = new TransferServiceImpl(authService);
+    private static final TransferService transferService = new TransferServiceImpl(authService, transactionService);
+    public static final String INCOME_SUM_MESSAGE = "Сумма дохода: ";
+    public static final String CATEGORY_LABEL = "Категория: ";
+    public static final String USER_LOGIN_LABEL = "Логин: ";
+    public static final String PASSWORD_LABEL = "Пароль: ";
+    public static final String UNKNOWN_COMMAND_MESSAGE = "Неизвестная команда.";
+    public static final String EXPENSE_SUM_MESSAGE = "Сумма расхода: ";
+    public static final String BUDGET_LABEL = "Бюджет: ";
+    public static final String RECIPIENT_LABEL = "Получатель: ";
+    public static final String TRANSFER_AMOUNT_PROMPT = "Сумма перевода: ";
+    public static final String COMMAND_REGISTER = "register";
+    public static final String LOGIN_COMMAND = "login";
+    public static final String COMMAND_EXIT = "exit";
+    public static final String COMMAND_TRANSFER = "transfer";
+    public static final String COMMAND_LOAD_DATA = "load_data";
+    public static final String SAVE_DATA_ACTION = "save_data";
+    public static final String COMMAND_CHECK_BUDGET = "check_budget";
+    public static final String COMMAND_SHOW_CATEGORIES = "show_categories";
+    public static final String COMMAND_SHOW_BALANCE = "show_balance";
+    public static final String COMMAND_SET_BUDGET = "set_budget";
+    public static final String COMMAND_ADD_EXPENSE = "add_expense";
+    public static final String COMMAND_ADD_INCOME = "add_income";
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
+            System.out.println("" +
+                    "register. Зарегистрируйтесь\n" +
+                    "login. Введите логин\n" +
+                    "exit. Выход");
             System.out.print("Введите команду: ");
 
             String command = scanner.nextLine();
@@ -19,27 +45,27 @@ public class FinanceManagerApp {
             String password;
 
             switch (command) {
-                case "register":
-                    System.out.print("Логин: ");
+                case COMMAND_REGISTER:
+                    System.out.print(USER_LOGIN_LABEL);
                     username = scanner.nextLine();
-                    System.out.print("Пароль: ");
+                    System.out.print(PASSWORD_LABEL);
                     password = scanner.nextLine();
                     authService.registerUser(username, password);
                     break;
-                case "login":
-                    System.out.print("Логин: ");
+                case LOGIN_COMMAND:
+                    System.out.print(USER_LOGIN_LABEL);
                     username = scanner.nextLine();
-                    System.out.print("Пароль: ");
+                    System.out.print(PASSWORD_LABEL);
                     password = scanner.nextLine();
                     User user = authService.loginUser(username, password);
                     if (user != null) {
                         userMenu(scanner, user);
                     }
                     break;
-                case "exit":
+                case COMMAND_EXIT:
                     System.exit(0);
                 default:
-                    System.out.println("Неизвестная команда.");
+                    System.out.println(UNKNOWN_COMMAND_MESSAGE);
             }
         }
     }
@@ -54,60 +80,60 @@ public class FinanceManagerApp {
             String category;
 
             switch (command) {
-                case "add_income":
-                    System.out.print("Сумма дохода: ");
+                case COMMAND_ADD_INCOME:
+                    System.out.print(INCOME_SUM_MESSAGE);
                     amount = Double.parseDouble(scanner.nextLine());
-                    System.out.print("Категория: ");
+                    System.out.print(CATEGORY_LABEL);
                     category = scanner.nextLine();
-                    wallet.addTransaction(new Transaction(amount, new Category(category), "Доход"));
+                    transactionService.addTransaction(wallet, new Transaction(amount, new Category(category), "Доход"));
                     break;
-                case "add_expense":
-                    System.out.print("Сумма расхода: ");
+                case COMMAND_ADD_EXPENSE:
+                    System.out.print(EXPENSE_SUM_MESSAGE);
                     amount = Double.parseDouble(scanner.nextLine());
-                    System.out.print("Категория: ");
+                    System.out.print(CATEGORY_LABEL);
                     category = scanner.nextLine();
-                    wallet.addTransaction(new Transaction(-amount, new Category(category), "Расход"));
+                    transactionService.addTransaction(wallet, new Transaction(-amount, new Category(category), "Расход"));
                     break;
-                case "set_budget":
-                    System.out.print("Категория: ");
+                case COMMAND_SET_BUDGET:
+                    System.out.print(CATEGORY_LABEL);
                     category = scanner.nextLine();
-                    System.out.print("Бюджет: ");
+                    System.out.print(BUDGET_LABEL);
                     double budget = Double.parseDouble(scanner.nextLine());
                     wallet.setBudgetForCategory(category, budget);
                     break;
-                case "show_balance":
+                case COMMAND_SHOW_BALANCE:
                     System.out.printf("Текущий баланс: %.2f\n", wallet.getBalance());
                     break;
-                case "show_categories":
+                case COMMAND_SHOW_CATEGORIES:
                     wallet.getCategories().forEach((name, cat) ->
                             System.out.printf("Категория: %s, Бюджет: %.2f\n", name, cat.getBudget())
                     );
                     break;
-                case "check_budget":
-                    System.out.print("Категория: ");
+                case COMMAND_CHECK_BUDGET:
+                    System.out.print(CATEGORY_LABEL);
                     category = scanner.nextLine();
                     wallet.checkBudgetLimit(category);
                     break;
-                case "save_data":
+                case SAVE_DATA_ACTION:
                     fileStorageService.saveWallet(wallet, "wallet_" + user.getUsername() + ".json");
                     break;
-                case "load_data":
+                case COMMAND_LOAD_DATA:
                     Wallet loadedWallet = fileStorageService.loadWallet("wallet_" + user.getUsername() + ".json");
                     if (loadedWallet != null) {
                         user.setWallet(loadedWallet);
                     }
                     break;
-                case "transfer":
-                    System.out.print("Получатель: ");
+                case COMMAND_TRANSFER:
+                    System.out.print(RECIPIENT_LABEL);
                     String recipientUsername = scanner.nextLine();
-                    System.out.print("Сумма перевода: ");
+                    System.out.print(TRANSFER_AMOUNT_PROMPT);
                     amount = Double.parseDouble(scanner.nextLine());
                     transferService.transferMoney(user, recipientUsername, amount);
                     break;
-                case "exit":
+                case COMMAND_EXIT:
                     return;
                 default:
-                    System.out.println("Неизвестная команда.");
+                    System.out.println(UNKNOWN_COMMAND_MESSAGE);
             }
         }
     }

@@ -8,9 +8,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Класс Wallet представляет финансовый кошелек пользователя, который содержит баланс,
+ * список транзакций и бюджеты по категориям. Он предоставляет методы управления
+ * финансовыми транзакциями, отслеживания доходов и расходов и обеспечения соблюдения бюджетных ограничений для
+ * различных категорий.
+ */
 @Getter
 @Setter
 public class Wallet {
+    public static final String BUDGET_LIMIT_EXCEEDED_MESSAGE = "Превышен лимит бюджета по категории '";
+
     private double balance;
     private List<Transaction> transactions;
     private Map<String, Category> categories;
@@ -21,30 +29,13 @@ public class Wallet {
         this.categories = new HashMap<>();
     }
 
-    public void addTransaction(Transaction transaction) {
-        this.transactions.add(transaction);
-        this.balance += transaction.getAmount();
-        String categoryName = transaction.getCategory().getName();
-        if (!this.categories.containsKey(categoryName)) {
-            this.categories.put(categoryName, transaction.getCategory());
-        }
-        checkBudgetLimit(categoryName);
-    }
-
-    public double getTotalIncome() {
-        return transactions.stream()
-                .filter(t -> t.getAmount() > 0)
-                .mapToDouble(Transaction::getAmount)
-                .sum();
-    }
-
-    public double getTotalExpense() {
-        return Math.abs(transactions.stream()
-                .filter(t -> t.getAmount() < 0)
-                .mapToDouble(Transaction::getAmount)
-                .sum());
-    }
-
+    /**
+     * Устанавливает бюджет для указанной категории. Если категория уже существует, её бюджет обновляется.
+     * Если категории не существует, создается новая категория с указанным бюджетом.
+     *
+     * @param categoryName название категории, для которой устанавливается бюджет
+     * @param budgetAmount сумма бюджета для заданной категории
+     */
     public void setBudgetForCategory(String categoryName, double budgetAmount) {
         if (this.categories.containsKey(categoryName)) {
             this.categories.get(categoryName).setBudget(budgetAmount);
@@ -54,6 +45,12 @@ public class Wallet {
         }
     }
 
+    /**
+     * Проверяет, превышает ли общая сумма расходов в конкретной категории лимит бюджета для этой категории.
+     * Если лимит превышен, выводится предупреждающее сообщение.
+     *
+     * @param categoryName название категории, которую нужно сопоставить с ее бюджетным лимитом
+     */
     public void checkBudgetLimit(String categoryName) {
         if (this.categories.containsKey(categoryName)) {
             Category category = this.categories.get(categoryName);
@@ -62,7 +59,7 @@ public class Wallet {
                     .mapToDouble(Transaction::getAmount)
                     .sum();
             if (Math.abs(totalSpent) > category.getBudget()) {
-                System.out.println("Превышен лимит бюджета по категории '" + categoryName + "'.");
+                System.out.println(BUDGET_LIMIT_EXCEEDED_MESSAGE + categoryName + "'.");
             }
         }
     }

@@ -48,13 +48,15 @@ public class FinanceManagerApp {
         while (true) {
             System.out.printf("%s, введите команду: ", user.getUsername());
             String command = scanner.nextLine();
+            double amount;
+            String category;
 
             switch (command) {
                 case "add_income":
                     System.out.print("Сумма дохода: ");
-                    double amount = Double.parseDouble(scanner.nextLine());
+                    amount = Double.parseDouble(scanner.nextLine());
                     System.out.print("Категория: ");
-                    String category = scanner.nextLine();
+                    category = scanner.nextLine();
                     wallet.addTransaction(new Transaction(amount, new Category(category), "Доход"));
                     break;
                 case "add_expense":

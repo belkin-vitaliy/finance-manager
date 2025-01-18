@@ -1,7 +1,7 @@
 package org.mephi;
 
 public class TransferServiceImpl implements TransferService {
-    private AuthService authService;
+    private final AuthService authService;
 
     public TransferServiceImpl(AuthService authService) {
         this.authService = authService;

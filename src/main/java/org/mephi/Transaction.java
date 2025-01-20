@@ -1,5 +1,6 @@
 package org.mephi;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import java.util.Objects;
  */
 @Getter
 @Setter
+@Data
 public class Transaction {
     /**
      * Определяет тип транзакции для данного объекта транзакции.
@@ -58,11 +60,4 @@ public class Transaction {
         }
     }
 
-    public Transaction(TransactionType type, double amount, Category category, Date date, String description) {
-        this.type = type;
-        this.date = date;
-        this.description = description;
-        this.amount = amount;
-        this.category = category;
-    }
 }

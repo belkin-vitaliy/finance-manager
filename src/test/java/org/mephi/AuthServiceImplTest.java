@@ -12,6 +12,10 @@ class AuthServiceImplTest {
     public static final String TEST_USER = "testUser";
     public static final String SECURE_PASSWORD = "securePassword123";
     public static final String WRONG_PASSWORD = "wrongPassword";
+    public static final String PASSWORD_MATCH_SUCCESS_MESSAGE = "Пароль должен совпадать и возвращать значение true";
+    public static final String PASSWORD_MISMATCH_ERROR_MESSAGE = "При несоответствии пароля должно быть возвращено значение false";
+    public static final String EXPECTED_FALSE_FOR_NULL_PASSWORD = "Если сохраненный пароль равен null, он должен вернуть значение false";
+
     private AuthService authService;
 
     @BeforeEach
@@ -28,7 +32,7 @@ class AuthServiceImplTest {
         boolean result = authService.checkPassword(user, providedPassword);
 
         // Assert
-        assertTrue(result, "Пароль должен совпадать и возвращать значение true");
+        assertTrue(result, PASSWORD_MATCH_SUCCESS_MESSAGE);
     }
 
     @Test
@@ -40,7 +44,7 @@ class AuthServiceImplTest {
         boolean result = authService.checkPassword(user, providedPassword);
 
         // Assert
-        assertFalse(result, "При несоответствии пароля должно быть возвращено значение false");
+        assertFalse(result, PASSWORD_MISMATCH_ERROR_MESSAGE);
     }
 
     @Test
@@ -63,7 +67,7 @@ class AuthServiceImplTest {
     void checkPassword_ShouldThrowException_WhenProvidedPasswordIsNull() {
         // Arrange
         User user = new User(TEST_USER, SECURE_PASSWORD);
-        user.setPassword("securePassword123");
+        user.setPassword(SECURE_PASSWORD);
         String providedPassword = null;
 
         // Assert
@@ -80,13 +84,13 @@ class AuthServiceImplTest {
     void checkPassword_ShouldReturnFalse_WhenStoredPasswordIsNull() {
         // Arrange
         User user = new User(TEST_USER, null);
-        String providedPassword = "securePassword123";
+        String providedPassword = SECURE_PASSWORD;
 
         // Act
         boolean result = authService.checkPassword(user, providedPassword);
 
         // Assert
-        assertFalse(result, "Если сохраненный пароль равен null, он должен вернуть значение false");
+        assertFalse(result, EXPECTED_FALSE_FOR_NULL_PASSWORD);
     }
 
 }

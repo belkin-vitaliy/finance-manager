@@ -31,4 +31,7 @@ public interface TransactionService {
      * @return общие расходы
      */
     double getTotalExpense(Wallet wallet);
+
+    public void logTransaction(User sender, User recipient, double amount, CategoryType category);
+
 }

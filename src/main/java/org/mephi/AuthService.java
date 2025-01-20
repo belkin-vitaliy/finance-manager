@@ -42,4 +42,11 @@ public interface AuthService {
      */
     boolean checkPassword(User user, String providedPassword);
 
+    /**
+     * Находит и извлекает пользователя из системы по его имени пользователя.
+     *
+     * @param username имя пользователя, которого нужно найти
+     * @return объект, представляющий пользователя, если он найден, или null, если пользователь не существует
+     */
+    Object findUserByUsername(String username);
 }

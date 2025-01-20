@@ -19,12 +19,39 @@ import java.util.Map;
 public class Wallet {
     public static final String BUDGET_LIMIT_EXCEEDED_MESSAGE = "Превышен лимит бюджета по категории '";
 
+    /**
+     * Представляет финансовый баланс кошелька.
+     * Это значение указывает текущую доступную сумму денег
+     * в кошельке, учитывая все транзакции доходов и расходов.
+     */
     private double balance;
+    /**
+     * Представляет собой набор транзакций, связанных с кошельком.
+     * Каждая транзакция в этом списке описывает отдельную финансовую операцию,
+     * которая может включать доходы или расходы. Эти данные используются для отслеживания
+     * и управления финансовой историей кошелька, предоставляя основу для
+     * анализа моделей расходов, расчета балансов и наблюдения за тенденциями.
+     */
     private List<Transaction> transactions;
+    /**
+     * Представляет собой набор категорий расходов или доходов в кошельке.
+     * Каждая категория идентифицируется уникальным именем и хранит информацию,
+     * например, тип категории и связанный с ней бюджет.
+     * Эта карта используется для управления и организации финансовой деятельности по категориям,
+     * позволяя отслеживать бюджет и управлять расходами.
+     * Ключом в карте является имя категории, а значением — соответствующий
+     * объект категории с подробной информацией о категории.
+     */
     private Map<String, Category> categories;
 
     public Wallet() {
         this.balance = 0;
+        this.transactions = new ArrayList<>();
+        this.categories = new HashMap<>();
+    }
+
+    public Wallet(double balance) {
+        this.balance = balance;
         this.transactions = new ArrayList<>();
         this.categories = new HashMap<>();
     }
@@ -37,10 +64,11 @@ public class Wallet {
      * @param budgetAmount сумма бюджета для заданной категории
      */
     public void setBudgetForCategory(String categoryName, double budgetAmount) {
+
         if (this.categories.containsKey(categoryName)) {
             this.categories.get(categoryName).setBudget(budgetAmount);
         } else {
-            Category newCategory = new Category(categoryName, budgetAmount);
+            Category newCategory = new Category(CategoryType.OTHER, categoryName,  budgetAmount);
             this.categories.put(categoryName, newCategory);
         }
     }

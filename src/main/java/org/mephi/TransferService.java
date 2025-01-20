@@ -22,4 +22,5 @@ public interface TransferService {
      * @param amount            денежная сумма, подлежащая переводу
      */
     void transferMoney(User sender, String recipientUsername, double amount);
+
 }

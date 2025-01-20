@@ -15,6 +15,7 @@ public class AuthServiceImpl implements AuthService {
     public static final String USER_ALREADY_EXISTS_MESSAGE = "Такой пользователь уже существует.";
     public static final String AUTHENTICATION_ERROR_MESSAGE = "Неверный логин или пароль.";
     public static final String REGISTRATION_SUCCESS_MESSAGE = "Регистрация прошла успешно.";
+
     private final Map<String, User> users;
 
     public AuthServiceImpl(Map<String, User> users) {
@@ -63,5 +64,14 @@ public class AuthServiceImpl implements AuthService {
 
         String storedPassword = user.getPassword(); // Предполагается, что пароль сохранен в виде обычного текста или хэширован
         return Objects.equals(storedPassword, providedPassword);
+    }
+
+    @Override
+    public Object findUserByUsername(String username) {
+        if (username == null || username.isEmpty()) {
+            throw new IllegalArgumentException(USER_NOT_NULL_MESSAGE);
+        }
+        //TODO реализовать поиск пользователя в базе
+        return null;
     }
 }
